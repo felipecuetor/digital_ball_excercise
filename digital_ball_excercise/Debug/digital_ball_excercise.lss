@@ -1,0 +1,1025 @@
+
+digital_ball_excercise.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000052c  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000002e  00800060  0000052c  000005c0  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000022  0080008e  0080008e  000005ee  2**0
+                  ALLOC
+  3 .debug_aranges 00000060  00000000  00000000  000005ee  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_pubnames 0000016e  00000000  00000000  0000064e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000544  00000000  00000000  000007bc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000001db  00000000  00000000  00000d00  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000651  00000000  00000000  00000edb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  000000a0  00000000  00000000  0000152c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000212  00000000  00000000  000015cc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000221  00000000  00000000  000017de  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000088  00000000  00000000  000019ff  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+	for (i = 0; i < 8; i++)
+	display[i] = im[i];
+}
+// ************************** fijar Pixel ***************************************
+void set_pixel(uint8_t r, uint8_t c, uint8_t value)
+{
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	2c c0       	rjmp	.+88     	; 0x5c <__bad_interrupt>
+   4:	2b c0       	rjmp	.+86     	; 0x5c <__bad_interrupt>
+   6:	2a c0       	rjmp	.+84     	; 0x5c <__bad_interrupt>
+   8:	29 c0       	rjmp	.+82     	; 0x5c <__bad_interrupt>
+   a:	28 c0       	rjmp	.+80     	; 0x5c <__bad_interrupt>
+   c:	27 c0       	rjmp	.+78     	; 0x5c <__bad_interrupt>
+   e:	26 c0       	rjmp	.+76     	; 0x5c <__bad_interrupt>
+  10:	25 c0       	rjmp	.+74     	; 0x5c <__bad_interrupt>
+  12:	24 c0       	rjmp	.+72     	; 0x5c <__bad_interrupt>
+  14:	23 c0       	rjmp	.+70     	; 0x5c <__bad_interrupt>
+  16:	22 c0       	rjmp	.+68     	; 0x5c <__bad_interrupt>
+  18:	21 c0       	rjmp	.+66     	; 0x5c <__bad_interrupt>
+  1a:	20 c0       	rjmp	.+64     	; 0x5c <__bad_interrupt>
+  1c:	1f c0       	rjmp	.+62     	; 0x5c <__bad_interrupt>
+  1e:	1e c0       	rjmp	.+60     	; 0x5c <__bad_interrupt>
+  20:	1d c0       	rjmp	.+58     	; 0x5c <__bad_interrupt>
+  22:	1c c0       	rjmp	.+56     	; 0x5c <__bad_interrupt>
+  24:	1b c0       	rjmp	.+54     	; 0x5c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	ec e2       	ldi	r30, 0x2C	; 44
+  3a:	f5 e0       	ldi	r31, 0x05	; 5
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <.do_copy_data_start>
+
+0000003e <.do_copy_data_loop>:
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+
+00000042 <.do_copy_data_start>:
+  42:	ae 38       	cpi	r26, 0x8E	; 142
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <.do_copy_data_loop>
+
+00000048 <__do_clear_bss>:
+  48:	10 e0       	ldi	r17, 0x00	; 0
+  4a:	ae e8       	ldi	r26, 0x8E	; 142
+  4c:	b0 e0       	ldi	r27, 0x00	; 0
+  4e:	01 c0       	rjmp	.+2      	; 0x52 <.do_clear_bss_start>
+
+00000050 <.do_clear_bss_loop>:
+  50:	1d 92       	st	X+, r1
+
+00000052 <.do_clear_bss_start>:
+  52:	a0 3b       	cpi	r26, 0xB0	; 176
+  54:	b1 07       	cpc	r27, r17
+  56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
+  58:	c5 d0       	rcall	.+394    	; 0x1e4 <main>
+  5a:	66 c2       	rjmp	.+1228   	; 0x528 <_exit>
+
+0000005c <__bad_interrupt>:
+  5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
+
+0000005e <update_now>:
+};
+
+//--------definición funciones del sistema ---------------------------------
+
+// ********** Funcion enviar por SPI ***************************************
+void update_now(int x, int y){
+  5e:	9c 01       	movw	r18, r24
+	uint8_t empty = 0b00000000;
+	now[0] = empty;
+  60:	e0 e9       	ldi	r30, 0x90	; 144
+  62:	f0 e0       	ldi	r31, 0x00	; 0
+  64:	df 01       	movw	r26, r30
+  66:	1d 92       	st	X+, r1
+	now[1] = empty;
+  68:	1c 92       	st	X, r1
+	now[2] = empty;
+  6a:	12 82       	std	Z+2, r1	; 0x02
+	now[3] = empty;
+  6c:	13 82       	std	Z+3, r1	; 0x03
+	now[4] = empty;
+  6e:	14 82       	std	Z+4, r1	; 0x04
+	now[5] = empty;
+  70:	15 82       	std	Z+5, r1	; 0x05
+	now[6] = empty;
+  72:	16 82       	std	Z+6, r1	; 0x06
+	now[7] = empty;
+  74:	17 82       	std	Z+7, r1	; 0x07
+	
+	row = 0b10000000;
+  76:	80 e8       	ldi	r24, 0x80	; 128
+  78:	80 93 af 00 	sts	0x00AF, r24
+	if (x==1)
+  7c:	21 30       	cpi	r18, 0x01	; 1
+  7e:	31 05       	cpc	r19, r1
+  80:	81 f1       	breq	.+96     	; 0xe2 <update_now+0x84>
+	{
+		row = 0b10000000;
+	}
+	else if (x==2){
+  82:	22 30       	cpi	r18, 0x02	; 2
+  84:	31 05       	cpc	r19, r1
+  86:	21 f4       	brne	.+8      	; 0x90 <update_now+0x32>
+		row = 0b01000000;
+  88:	80 e4       	ldi	r24, 0x40	; 64
+  8a:	80 93 af 00 	sts	0x00AF, r24
+  8e:	29 c0       	rjmp	.+82     	; 0xe2 <update_now+0x84>
+	}
+	else if (x==3){
+  90:	23 30       	cpi	r18, 0x03	; 3
+  92:	31 05       	cpc	r19, r1
+  94:	21 f4       	brne	.+8      	; 0x9e <update_now+0x40>
+		row = 0b00100000;
+  96:	80 e2       	ldi	r24, 0x20	; 32
+  98:	80 93 af 00 	sts	0x00AF, r24
+  9c:	22 c0       	rjmp	.+68     	; 0xe2 <update_now+0x84>
+	}
+	else if (x==4){
+  9e:	24 30       	cpi	r18, 0x04	; 4
+  a0:	31 05       	cpc	r19, r1
+  a2:	21 f4       	brne	.+8      	; 0xac <update_now+0x4e>
+		row = 0b00010000;
+  a4:	80 e1       	ldi	r24, 0x10	; 16
+  a6:	80 93 af 00 	sts	0x00AF, r24
+  aa:	1b c0       	rjmp	.+54     	; 0xe2 <update_now+0x84>
+	}
+	else if (x==5){
+  ac:	25 30       	cpi	r18, 0x05	; 5
+  ae:	31 05       	cpc	r19, r1
+  b0:	21 f4       	brne	.+8      	; 0xba <update_now+0x5c>
+		row = 0b00001000;
+  b2:	88 e0       	ldi	r24, 0x08	; 8
+  b4:	80 93 af 00 	sts	0x00AF, r24
+  b8:	14 c0       	rjmp	.+40     	; 0xe2 <update_now+0x84>
+	}
+	else if (x==6){
+  ba:	26 30       	cpi	r18, 0x06	; 6
+  bc:	31 05       	cpc	r19, r1
+  be:	21 f4       	brne	.+8      	; 0xc8 <update_now+0x6a>
+		row = 0b00000100;
+  c0:	84 e0       	ldi	r24, 0x04	; 4
+  c2:	80 93 af 00 	sts	0x00AF, r24
+  c6:	0d c0       	rjmp	.+26     	; 0xe2 <update_now+0x84>
+	}
+	else if (x==7){
+  c8:	27 30       	cpi	r18, 0x07	; 7
+  ca:	31 05       	cpc	r19, r1
+  cc:	21 f4       	brne	.+8      	; 0xd6 <update_now+0x78>
+		row = 0b00000010;
+  ce:	82 e0       	ldi	r24, 0x02	; 2
+  d0:	80 93 af 00 	sts	0x00AF, r24
+  d4:	06 c0       	rjmp	.+12     	; 0xe2 <update_now+0x84>
+	}
+	else if (x==8){
+  d6:	28 30       	cpi	r18, 0x08	; 8
+  d8:	31 05       	cpc	r19, r1
+  da:	19 f4       	brne	.+6      	; 0xe2 <update_now+0x84>
+		row = 0b00000001;
+  dc:	81 e0       	ldi	r24, 0x01	; 1
+  de:	80 93 af 00 	sts	0x00AF, r24
+	}
+	now[y-1] = row;
+  e2:	fb 01       	movw	r30, r22
+  e4:	e1 57       	subi	r30, 0x71	; 113
+  e6:	ff 4f       	sbci	r31, 0xFF	; 255
+  e8:	80 91 af 00 	lds	r24, 0x00AF
+  ec:	80 83       	st	Z, r24
+}
+  ee:	08 95       	ret
+
+000000f0 <spi_send>:
+
+void spi_send(uint8_t data) // se especifica el tipo de variable que va a entrar a la funcion y como se llamara dentro de ella
+{
+  f0:	28 2f       	mov	r18, r24
+  f2:	90 e0       	ldi	r25, 0x00	; 0
+	uint8_t i;  // declaracion de variable local
+	for (i = 0; i < 8; i++, data <<= 1)  // Realiza el barrido de las 8 posiciones del vector data
+	{
+		CLK_LOW();
+  f4:	e2 e3       	ldi	r30, 0x32	; 50
+  f6:	f0 e0       	ldi	r31, 0x00	; 0
+  f8:	80 81       	ld	r24, Z
+  fa:	8f 7d       	andi	r24, 0xDF	; 223
+  fc:	80 83       	st	Z, r24
+		if (data & 0x80)
+  fe:	22 23       	and	r18, r18
+ 100:	24 f4       	brge	.+8      	; 0x10a <spi_send+0x1a>
+			DATA_HIGH();
+ 102:	80 81       	ld	r24, Z
+ 104:	88 60       	ori	r24, 0x08	; 8
+ 106:	80 83       	st	Z, r24
+ 108:	03 c0       	rjmp	.+6      	; 0x110 <spi_send+0x20>
+		else
+			DATA_LOW();
+ 10a:	80 81       	ld	r24, Z
+ 10c:	87 7f       	andi	r24, 0xF7	; 247
+ 10e:	80 83       	st	Z, r24
+			CLK_HIGH();
+ 110:	80 81       	ld	r24, Z
+ 112:	80 62       	ori	r24, 0x20	; 32
+ 114:	80 83       	st	Z, r24
+}
+
+void spi_send(uint8_t data) // se especifica el tipo de variable que va a entrar a la funcion y como se llamara dentro de ella
+{
+	uint8_t i;  // declaracion de variable local
+	for (i = 0; i < 8; i++, data <<= 1)  // Realiza el barrido de las 8 posiciones del vector data
+ 116:	9f 5f       	subi	r25, 0xFF	; 255
+ 118:	98 30       	cpi	r25, 0x08	; 8
+ 11a:	11 f0       	breq	.+4      	; 0x120 <spi_send+0x30>
+ 11c:	22 0f       	add	r18, r18
+ 11e:	ec cf       	rjmp	.-40     	; 0xf8 <spi_send+0x8>
+ 120:	08 95       	ret
+
+00000122 <max7219_writec>:
+	}
+	
+}
+// ********** Escribir en la matriz ***************************************
+void max7219_writec(uint8_t high_byte, uint8_t low_byte)
+{
+ 122:	ff 92       	push	r15
+ 124:	0f 93       	push	r16
+ 126:	1f 93       	push	r17
+ 128:	f6 2e       	mov	r15, r22
+	CS_LOW();
+ 12a:	02 e3       	ldi	r16, 0x32	; 50
+ 12c:	10 e0       	ldi	r17, 0x00	; 0
+ 12e:	f8 01       	movw	r30, r16
+ 130:	90 81       	ld	r25, Z
+ 132:	9f 7e       	andi	r25, 0xEF	; 239
+ 134:	90 83       	st	Z, r25
+	spi_send(high_byte);
+ 136:	dc df       	rcall	.-72     	; 0xf0 <spi_send>
+	spi_send(low_byte);
+ 138:	8f 2d       	mov	r24, r15
+ 13a:	da df       	rcall	.-76     	; 0xf0 <spi_send>
+	CS_HIGH();
+ 13c:	f8 01       	movw	r30, r16
+ 13e:	80 81       	ld	r24, Z
+ 140:	80 61       	ori	r24, 0x10	; 16
+ 142:	80 83       	st	Z, r24
+}
+ 144:	1f 91       	pop	r17
+ 146:	0f 91       	pop	r16
+ 148:	ff 90       	pop	r15
+ 14a:	08 95       	ret
+
+0000014c <max7219_clear>:
+// ********** Limpiar la matriz *******************************************
+
+void max7219_clear(void)
+{
+ 14c:	1f 93       	push	r17
+ 14e:	10 e0       	ldi	r17, 0x00	; 0
+	uint8_t i;
+	for (i = 0; i < 8; i++)
+	{
+		max7219_writec(i+1, 0);
+ 150:	1f 5f       	subi	r17, 0xFF	; 255
+ 152:	81 2f       	mov	r24, r17
+ 154:	60 e0       	ldi	r22, 0x00	; 0
+ 156:	e5 df       	rcall	.-54     	; 0x122 <max7219_writec>
+// ********** Limpiar la matriz *******************************************
+
+void max7219_clear(void)
+{
+	uint8_t i;
+	for (i = 0; i < 8; i++)
+ 158:	18 30       	cpi	r17, 0x08	; 8
+ 15a:	d1 f7       	brne	.-12     	; 0x150 <max7219_clear+0x4>
+	{
+		max7219_writec(i+1, 0);
+	}
+}
+ 15c:	1f 91       	pop	r17
+ 15e:	08 95       	ret
+
+00000160 <max7219_init>:
+// ********** Inicializar la matriz ***************************************
+void max7219_init(void)
+{
+	INIT_PORT();
+ 160:	e1 e3       	ldi	r30, 0x31	; 49
+ 162:	f0 e0       	ldi	r31, 0x00	; 0
+ 164:	80 81       	ld	r24, Z
+ 166:	8f ef       	ldi	r24, 0xFF	; 255
+ 168:	80 83       	st	Z, r24
+	// Decode mode: none
+	max7219_writec(0x04, 0);
+ 16a:	84 e0       	ldi	r24, 0x04	; 4
+ 16c:	60 e0       	ldi	r22, 0x00	; 0
+ 16e:	d9 df       	rcall	.-78     	; 0x122 <max7219_writec>
+	// Intensity: 3 (0-15)
+	max7219_writec(0x0A, 1);
+ 170:	8a e0       	ldi	r24, 0x0A	; 10
+ 172:	61 e0       	ldi	r22, 0x01	; 1
+ 174:	d6 df       	rcall	.-84     	; 0x122 <max7219_writec>
+	// Scan limit: All "digits" (rows) on
+	max7219_writec(0x0B, 7);
+ 176:	8b e0       	ldi	r24, 0x0B	; 11
+ 178:	67 e0       	ldi	r22, 0x07	; 7
+ 17a:	d3 df       	rcall	.-90     	; 0x122 <max7219_writec>
+	// Shutdown register: Display on
+	max7219_writec(0x0C, 1);
+ 17c:	8c e0       	ldi	r24, 0x0C	; 12
+ 17e:	61 e0       	ldi	r22, 0x01	; 1
+ 180:	d0 df       	rcall	.-96     	; 0x122 <max7219_writec>
+	// Display test: off
+	max7219_writec(0x0F, 0);
+ 182:	8f e0       	ldi	r24, 0x0F	; 15
+ 184:	60 e0       	ldi	r22, 0x00	; 0
+ 186:	cd df       	rcall	.-102    	; 0x122 <max7219_writec>
+	max7219_clear();
+ 188:	e1 df       	rcall	.-62     	; 0x14c <max7219_clear>
+}
+ 18a:	08 95       	ret
+
+0000018c <update_display>:
+// ********** Actualizar la pantalla ***************************************
+uint8_t display[8];
+void update_display(void)
+{
+ 18c:	0f 93       	push	r16
+ 18e:	1f 93       	push	r17
+ 190:	cf 93       	push	r28
+ 192:	df 93       	push	r29
+ 194:	c0 e0       	ldi	r28, 0x00	; 0
+ 196:	d0 e0       	ldi	r29, 0x00	; 0
+	uint8_t i;
+	for (i = 0; i < 8; i++)
+	{
+		max7219_writec(i+1, display[i]);
+ 198:	04 ea       	ldi	r16, 0xA4	; 164
+ 19a:	10 e0       	ldi	r17, 0x00	; 0
+ 19c:	f8 01       	movw	r30, r16
+ 19e:	ec 0f       	add	r30, r28
+ 1a0:	fd 1f       	adc	r31, r29
+ 1a2:	9e 01       	movw	r18, r28
+ 1a4:	2f 5f       	subi	r18, 0xFF	; 255
+ 1a6:	82 2f       	mov	r24, r18
+ 1a8:	60 81       	ld	r22, Z
+ 1aa:	bb df       	rcall	.-138    	; 0x122 <max7219_writec>
+ 1ac:	21 96       	adiw	r28, 0x01	; 1
+// ********** Actualizar la pantalla ***************************************
+uint8_t display[8];
+void update_display(void)
+{
+	uint8_t i;
+	for (i = 0; i < 8; i++)
+ 1ae:	c8 30       	cpi	r28, 0x08	; 8
+ 1b0:	d1 05       	cpc	r29, r1
+ 1b2:	a1 f7       	brne	.-24     	; 0x19c <update_display+0x10>
+	{
+		max7219_writec(i+1, display[i]);
+	}
+}
+ 1b4:	df 91       	pop	r29
+ 1b6:	cf 91       	pop	r28
+ 1b8:	1f 91       	pop	r17
+ 1ba:	0f 91       	pop	r16
+ 1bc:	08 95       	ret
+
+000001be <image>:
+// ************************** Imagen ***************************************
+
+void image(const uint8_t im[8])
+{
+ 1be:	bc 01       	movw	r22, r24
+ 1c0:	20 e0       	ldi	r18, 0x00	; 0
+ 1c2:	30 e0       	ldi	r19, 0x00	; 0
+	uint8_t i;
+	for (i = 0; i < 8; i++)
+	display[i] = im[i];
+ 1c4:	44 ea       	ldi	r20, 0xA4	; 164
+ 1c6:	50 e0       	ldi	r21, 0x00	; 0
+ 1c8:	da 01       	movw	r26, r20
+ 1ca:	a2 0f       	add	r26, r18
+ 1cc:	b3 1f       	adc	r27, r19
+ 1ce:	fb 01       	movw	r30, r22
+ 1d0:	e2 0f       	add	r30, r18
+ 1d2:	f3 1f       	adc	r31, r19
+ 1d4:	80 81       	ld	r24, Z
+ 1d6:	8c 93       	st	X, r24
+ 1d8:	2f 5f       	subi	r18, 0xFF	; 255
+ 1da:	3f 4f       	sbci	r19, 0xFF	; 255
+// ************************** Imagen ***************************************
+
+void image(const uint8_t im[8])
+{
+	uint8_t i;
+	for (i = 0; i < 8; i++)
+ 1dc:	28 30       	cpi	r18, 0x08	; 8
+ 1de:	31 05       	cpc	r19, r1
+ 1e0:	99 f7       	brne	.-26     	; 0x1c8 <image+0xa>
+	display[i] = im[i];
+}
+ 1e2:	08 95       	ret
+
+000001e4 <main>:
+	}
+}
+
+// ------------ Inicio del programa ----------------------------------------
+int main(void)
+{
+ 1e4:	2f 92       	push	r2
+ 1e6:	3f 92       	push	r3
+ 1e8:	4f 92       	push	r4
+ 1ea:	5f 92       	push	r5
+ 1ec:	6f 92       	push	r6
+ 1ee:	7f 92       	push	r7
+ 1f0:	8f 92       	push	r8
+ 1f2:	9f 92       	push	r9
+ 1f4:	af 92       	push	r10
+ 1f6:	bf 92       	push	r11
+ 1f8:	cf 92       	push	r12
+ 1fa:	df 92       	push	r13
+ 1fc:	ff 92       	push	r15
+ 1fe:	0f 93       	push	r16
+ 200:	1f 93       	push	r17
+ 202:	cf 93       	push	r28
+ 204:	df 93       	push	r29
+	
+	max7219_init(); // llamado de la funcion "max7219_init"
+ 206:	ac df       	rcall	.-168    	; 0x160 <max7219_init>
+	update_now(x,y);
+ 208:	60 91 62 00 	lds	r22, 0x0062
+ 20c:	70 91 63 00 	lds	r23, 0x0063
+ 210:	80 91 60 00 	lds	r24, 0x0060
+ 214:	90 91 61 00 	lds	r25, 0x0061
+ 218:	22 df       	rcall	.-444    	; 0x5e <update_now>
+	image(menuLevel1);  // carga la imagen a visualizar
+ 21a:	8e e6       	ldi	r24, 0x6E	; 110
+ 21c:	90 e0       	ldi	r25, 0x00	; 0
+ 21e:	cf df       	rcall	.-98     	; 0x1be <image>
+	update_display();
+ 220:	b5 df       	rcall	.-150    	; 0x18c <update_display>
+	// Counter for number of equal states
+	static uint8_t count = 0;
+	// Keeps track of current (debounced) state
+	static uint8_t button_state = 0;
+	// Check if button is high or low for the moment
+	uint8_t current_state = (~BUTTON_PIN & BUTTON6_MASK) != 0;
+ 222:	c0 e3       	ldi	r28, 0x30	; 48
+ 224:	d0 e0       	ldi	r29, 0x00	; 0
+ 226:	01 e0       	ldi	r16, 0x01	; 1
+ 228:	10 e0       	ldi	r17, 0x00	; 0
+		if (count >= 4) {
+			// The button have not bounced for four checks, change state
+			button_state = current_state;
+			// If the button was pressed (not released), tell main so
+			if (current_state != 0) {
+				button6_down = 1;
+ 22a:	ff 24       	eor	r15, r15
+ 22c:	f3 94       	inc	r15
+			if(state==0){
+				image(start);  // carga la imagen a visualizar
+				state = 1;
+			}
+			else if(state == 1){
+				image(menuLevel1);
+ 22e:	0f 2e       	mov	r0, r31
+ 230:	fe e6       	ldi	r31, 0x6E	; 110
+ 232:	cf 2e       	mov	r12, r31
+ 234:	f0 e0       	ldi	r31, 0x00	; 0
+ 236:	df 2e       	mov	r13, r31
+ 238:	f0 2d       	mov	r31, r0
+				state = 2;
+ 23a:	22 24       	eor	r2, r2
+ 23c:	33 24       	eor	r3, r3
+ 23e:	68 94       	set
+ 240:	21 f8       	bld	r2, 1
+		debouncebtn2();
+		debouncebtn0();
+		if(button6_down)
+		{
+			if(state==0){
+				image(start);  // carga la imagen a visualizar
+ 242:	0f 2e       	mov	r0, r31
+ 244:	f6 e6       	ldi	r31, 0x66	; 102
+ 246:	4f 2e       	mov	r4, r31
+ 248:	f0 e0       	ldi	r31, 0x00	; 0
+ 24a:	5f 2e       	mov	r5, r31
+ 24c:	f0 2d       	mov	r31, r0
+				menu = menu-1;
+			}
+			if(menu==1){image(menuLevel1);}
+			else if(menu == 2){image(menuLevel2);}
+			else if(menu == 3){image(menuLevel3);}
+			else if(menu == 4){image(menuLevel4);}
+ 24e:	0f 2e       	mov	r0, r31
+ 250:	f6 e8       	ldi	r31, 0x86	; 134
+ 252:	6f 2e       	mov	r6, r31
+ 254:	f0 e0       	ldi	r31, 0x00	; 0
+ 256:	7f 2e       	mov	r7, r31
+ 258:	f0 2d       	mov	r31, r0
+			if(menu>1){
+				menu = menu-1;
+			}
+			if(menu==1){image(menuLevel1);}
+			else if(menu == 2){image(menuLevel2);}
+			else if(menu == 3){image(menuLevel3);}
+ 25a:	0f 2e       	mov	r0, r31
+ 25c:	fe e7       	ldi	r31, 0x7E	; 126
+ 25e:	8f 2e       	mov	r8, r31
+ 260:	f0 e0       	ldi	r31, 0x00	; 0
+ 262:	9f 2e       	mov	r9, r31
+ 264:	f0 2d       	mov	r31, r0
+		{
+			if(menu>1){
+				menu = menu-1;
+			}
+			if(menu==1){image(menuLevel1);}
+			else if(menu == 2){image(menuLevel2);}
+ 266:	0f 2e       	mov	r0, r31
+ 268:	f6 e7       	ldi	r31, 0x76	; 118
+ 26a:	af 2e       	mov	r10, r31
+ 26c:	f0 e0       	ldi	r31, 0x00	; 0
+ 26e:	bf 2e       	mov	r11, r31
+ 270:	f0 2d       	mov	r31, r0
+	// Counter for number of equal states
+	static uint8_t count = 0;
+	// Keeps track of current (debounced) state
+	static uint8_t button_state = 0;
+	// Check if button is high or low for the moment
+	uint8_t current_state = (~BUTTON_PIN & BUTTON6_MASK) != 0;
+ 272:	88 81       	ld	r24, Y
+ 274:	90 e0       	ldi	r25, 0x00	; 0
+ 276:	00 24       	eor	r0, r0
+ 278:	88 0f       	add	r24, r24
+ 27a:	99 1f       	adc	r25, r25
+ 27c:	00 1c       	adc	r0, r0
+ 27e:	88 0f       	add	r24, r24
+ 280:	99 1f       	adc	r25, r25
+ 282:	00 1c       	adc	r0, r0
+ 284:	89 2f       	mov	r24, r25
+ 286:	90 2d       	mov	r25, r0
+ 288:	80 27       	eor	r24, r16
+ 28a:	91 27       	eor	r25, r17
+ 28c:	98 2f       	mov	r25, r24
+ 28e:	91 70       	andi	r25, 0x01	; 1
+	if (current_state != button_state) {
+ 290:	80 91 98 00 	lds	r24, 0x0098
+ 294:	98 17       	cp	r25, r24
+ 296:	81 f0       	breq	.+32     	; 0x2b8 <main+0xd4>
+		// Button state is about to be changed, increase counter
+		count++;
+ 298:	80 91 99 00 	lds	r24, 0x0099
+ 29c:	8f 5f       	subi	r24, 0xFF	; 255
+ 29e:	80 93 99 00 	sts	0x0099, r24
+		if (count >= 4) {
+ 2a2:	84 30       	cpi	r24, 0x04	; 4
+ 2a4:	58 f0       	brcs	.+22     	; 0x2bc <main+0xd8>
+			// The button have not bounced for four checks, change state
+			button_state = current_state;
+ 2a6:	90 93 98 00 	sts	0x0098, r25
+			// If the button was pressed (not released), tell main so
+			if (current_state != 0) {
+ 2aa:	99 23       	and	r25, r25
+ 2ac:	11 f0       	breq	.+4      	; 0x2b2 <main+0xce>
+				button6_down = 1;
+ 2ae:	f0 92 ac 00 	sts	0x00AC, r15
+			}
+			count = 0;
+ 2b2:	10 92 99 00 	sts	0x0099, r1
+ 2b6:	02 c0       	rjmp	.+4      	; 0x2bc <main+0xd8>
+		}
+		} else {
+		// Reset counter
+		count = 0;
+ 2b8:	10 92 99 00 	sts	0x0099, r1
+	// Counter for number of equal states
+	static uint8_t count = 0;
+	// Keeps track of current (debounced) state
+	static uint8_t button_state = 0;
+	// Check if button is high or low for the moment
+	uint8_t current_state = (~BUTTON_PIN & BUTTON7_MASK) != 0;
+ 2bc:	88 81       	ld	r24, Y
+ 2be:	88 23       	and	r24, r24
+ 2c0:	80 95       	com	r24
+ 2c2:	98 2f       	mov	r25, r24
+ 2c4:	99 1f       	adc	r25, r25
+ 2c6:	99 27       	eor	r25, r25
+ 2c8:	99 1f       	adc	r25, r25
+	if (current_state != button_state) {
+ 2ca:	80 91 9a 00 	lds	r24, 0x009A
+ 2ce:	98 17       	cp	r25, r24
+ 2d0:	81 f0       	breq	.+32     	; 0x2f2 <main+0x10e>
+		// Button state is about to be changed, increase counter
+		count++;
+ 2d2:	80 91 9b 00 	lds	r24, 0x009B
+ 2d6:	8f 5f       	subi	r24, 0xFF	; 255
+ 2d8:	80 93 9b 00 	sts	0x009B, r24
+		if (count >= 4) {
+ 2dc:	84 30       	cpi	r24, 0x04	; 4
+ 2de:	58 f0       	brcs	.+22     	; 0x2f6 <main+0x112>
+			// The button have not bounced for four checks, change state
+			button_state = current_state;
+ 2e0:	90 93 9a 00 	sts	0x009A, r25
+			// If the button was pressed (not released), tell main so
+			if (current_state != 0) {
+ 2e4:	99 23       	and	r25, r25
+ 2e6:	11 f0       	breq	.+4      	; 0x2ec <main+0x108>
+				button7_down = 1;
+ 2e8:	f0 92 a2 00 	sts	0x00A2, r15
+			}
+			count = 0;
+ 2ec:	10 92 9b 00 	sts	0x009B, r1
+ 2f0:	02 c0       	rjmp	.+4      	; 0x2f6 <main+0x112>
+		}
+		} else {
+		// Reset counter
+		count = 0;
+ 2f2:	10 92 9b 00 	sts	0x009B, r1
+	// Counter for number of equal states
+	static uint8_t count = 0;
+	// Keeps track of current (debounced) state
+	static uint8_t button_state = 0;
+	// Check if button is high or low for the moment
+	uint8_t current_state = (~BUTTON_PIN & BUTTON1_MASK) != 0;
+ 2f6:	88 81       	ld	r24, Y
+ 2f8:	90 e0       	ldi	r25, 0x00	; 0
+ 2fa:	96 95       	lsr	r25
+ 2fc:	87 95       	ror	r24
+ 2fe:	80 27       	eor	r24, r16
+ 300:	91 27       	eor	r25, r17
+ 302:	98 2f       	mov	r25, r24
+ 304:	91 70       	andi	r25, 0x01	; 1
+	if (current_state != button_state) {
+ 306:	80 91 9c 00 	lds	r24, 0x009C
+ 30a:	98 17       	cp	r25, r24
+ 30c:	81 f0       	breq	.+32     	; 0x32e <main+0x14a>
+		// Button state is about to be changed, increase counter
+		count++;
+ 30e:	80 91 9d 00 	lds	r24, 0x009D
+ 312:	8f 5f       	subi	r24, 0xFF	; 255
+ 314:	80 93 9d 00 	sts	0x009D, r24
+		if (count >= 100) {
+ 318:	84 36       	cpi	r24, 0x64	; 100
+ 31a:	58 f0       	brcs	.+22     	; 0x332 <main+0x14e>
+			// The button have not bounced for four checks, change state
+			button_state = current_state;
+ 31c:	90 93 9c 00 	sts	0x009C, r25
+			// If the button was pressed (not released), tell main so
+			if (current_state != 0) {
+ 320:	99 23       	and	r25, r25
+ 322:	11 f0       	breq	.+4      	; 0x328 <main+0x144>
+				button1_down = 1;
+ 324:	f0 92 ad 00 	sts	0x00AD, r15
+			}
+			count = 0;
+ 328:	10 92 9d 00 	sts	0x009D, r1
+ 32c:	02 c0       	rjmp	.+4      	; 0x332 <main+0x14e>
+		}
+		} else {
+		// Reset counter
+		count = 0;
+ 32e:	10 92 9d 00 	sts	0x009D, r1
+	// Counter for number of equal states
+	static uint8_t count = 0;
+	// Keeps track of current (debounced) state
+	static uint8_t button_state = 0;
+	// Check if button is high or low for the moment
+	uint8_t current_state = (~BUTTON_PIN & BUTTON2_MASK) != 0;
+ 332:	88 81       	ld	r24, Y
+ 334:	90 e0       	ldi	r25, 0x00	; 0
+ 336:	96 95       	lsr	r25
+ 338:	87 95       	ror	r24
+ 33a:	96 95       	lsr	r25
+ 33c:	87 95       	ror	r24
+ 33e:	80 27       	eor	r24, r16
+ 340:	91 27       	eor	r25, r17
+ 342:	98 2f       	mov	r25, r24
+ 344:	91 70       	andi	r25, 0x01	; 1
+	if (current_state != button_state) {
+ 346:	80 91 9e 00 	lds	r24, 0x009E
+ 34a:	98 17       	cp	r25, r24
+ 34c:	81 f0       	breq	.+32     	; 0x36e <main+0x18a>
+		// Button state is about to be changed, increase counter
+		count++;
+ 34e:	80 91 9f 00 	lds	r24, 0x009F
+ 352:	8f 5f       	subi	r24, 0xFF	; 255
+ 354:	80 93 9f 00 	sts	0x009F, r24
+		if (count >= 100) {
+ 358:	84 36       	cpi	r24, 0x64	; 100
+ 35a:	58 f0       	brcs	.+22     	; 0x372 <main+0x18e>
+			// The button have not bounced for four checks, change state
+			button_state = current_state;
+ 35c:	90 93 9e 00 	sts	0x009E, r25
+			// If the button was pressed (not released), tell main so
+			if (current_state != 0) {
+ 360:	99 23       	and	r25, r25
+ 362:	11 f0       	breq	.+4      	; 0x368 <main+0x184>
+				button2_down = 1;
+ 364:	f0 92 a3 00 	sts	0x00A3, r15
+			}
+			count = 0;
+ 368:	10 92 9f 00 	sts	0x009F, r1
+ 36c:	02 c0       	rjmp	.+4      	; 0x372 <main+0x18e>
+		}
+		} else {
+		// Reset counter
+		count = 0;
+ 36e:	10 92 9f 00 	sts	0x009F, r1
+	// Counter for number of equal states
+	static uint8_t count = 0;
+	// Keeps track of current (debounced) state
+	static uint8_t button_state = 0;
+	// Check if button is high or low for the moment
+	uint8_t current_state = (~BUTTON_PIN & BUTTON0_MASK) != 0;
+ 372:	88 81       	ld	r24, Y
+ 374:	80 27       	eor	r24, r16
+ 376:	98 2f       	mov	r25, r24
+ 378:	91 70       	andi	r25, 0x01	; 1
+	if (current_state != button_state) {
+ 37a:	80 91 a0 00 	lds	r24, 0x00A0
+ 37e:	98 17       	cp	r25, r24
+ 380:	81 f0       	breq	.+32     	; 0x3a2 <main+0x1be>
+		// Button state is about to be changed, increase counter
+		count++;
+ 382:	80 91 a1 00 	lds	r24, 0x00A1
+ 386:	8f 5f       	subi	r24, 0xFF	; 255
+ 388:	80 93 a1 00 	sts	0x00A1, r24
+		if (count >= 100) {
+ 38c:	84 36       	cpi	r24, 0x64	; 100
+ 38e:	58 f0       	brcs	.+22     	; 0x3a6 <main+0x1c2>
+			// The button have not bounced for four checks, change state
+			button_state = current_state;
+ 390:	90 93 a0 00 	sts	0x00A0, r25
+			// If the button was pressed (not released), tell main so
+			if (current_state != 0) {
+ 394:	99 23       	and	r25, r25
+ 396:	11 f0       	breq	.+4      	; 0x39c <main+0x1b8>
+				button0_down = 1;
+ 398:	f0 92 ae 00 	sts	0x00AE, r15
+			}
+			count = 0;
+ 39c:	10 92 a1 00 	sts	0x00A1, r1
+ 3a0:	02 c0       	rjmp	.+4      	; 0x3a6 <main+0x1c2>
+		}
+		} else {
+		// Reset counter
+		count = 0;
+ 3a2:	10 92 a1 00 	sts	0x00A1, r1
+		debouncebtn6();
+		debouncebtn7();
+		debouncebtn1();
+		debouncebtn2();
+		debouncebtn0();
+		if(button6_down)
+ 3a6:	80 91 ac 00 	lds	r24, 0x00AC
+ 3aa:	88 23       	and	r24, r24
+ 3ac:	c1 f0       	breq	.+48     	; 0x3de <main+0x1fa>
+		{
+			if(state==0){
+ 3ae:	80 91 8e 00 	lds	r24, 0x008E
+ 3b2:	90 91 8f 00 	lds	r25, 0x008F
+ 3b6:	00 97       	sbiw	r24, 0x00	; 0
+ 3b8:	39 f4       	brne	.+14     	; 0x3c8 <main+0x1e4>
+				image(start);  // carga la imagen a visualizar
+ 3ba:	c2 01       	movw	r24, r4
+ 3bc:	00 df       	rcall	.-512    	; 0x1be <image>
+				state = 1;
+ 3be:	10 93 8f 00 	sts	0x008F, r17
+ 3c2:	00 93 8e 00 	sts	0x008E, r16
+ 3c6:	08 c0       	rjmp	.+16     	; 0x3d8 <main+0x1f4>
+			}
+			else if(state == 1){
+ 3c8:	01 97       	sbiw	r24, 0x01	; 1
+ 3ca:	31 f4       	brne	.+12     	; 0x3d8 <main+0x1f4>
+				image(menuLevel1);
+ 3cc:	c6 01       	movw	r24, r12
+ 3ce:	f7 de       	rcall	.-530    	; 0x1be <image>
+				state = 2;
+ 3d0:	30 92 8f 00 	sts	0x008F, r3
+ 3d4:	20 92 8e 00 	sts	0x008E, r2
+			}
+			else if(state == 2){
+				//iniciar nivel seleccionado
+				//PAsar a estados de juego
+			}
+			update_display();
+ 3d8:	d9 de       	rcall	.-590    	; 0x18c <update_display>
+			button6_down = 0;
+ 3da:	10 92 ac 00 	sts	0x00AC, r1
+		}
+		
+		if(button7_down)
+ 3de:	80 91 a2 00 	lds	r24, 0x00A2
+ 3e2:	88 23       	and	r24, r24
+ 3e4:	49 f1       	breq	.+82     	; 0x438 <main+0x254>
+		{
+			if(menu>1){
+ 3e6:	80 91 64 00 	lds	r24, 0x0064
+ 3ea:	90 91 65 00 	lds	r25, 0x0065
+ 3ee:	82 30       	cpi	r24, 0x02	; 2
+ 3f0:	91 05       	cpc	r25, r1
+ 3f2:	2c f0       	brlt	.+10     	; 0x3fe <main+0x21a>
+				menu = menu-1;
+ 3f4:	01 97       	sbiw	r24, 0x01	; 1
+ 3f6:	90 93 65 00 	sts	0x0065, r25
+ 3fa:	80 93 64 00 	sts	0x0064, r24
+			}
+			if(menu==1){image(menuLevel1);}
+ 3fe:	80 91 64 00 	lds	r24, 0x0064
+ 402:	90 91 65 00 	lds	r25, 0x0065
+ 406:	81 30       	cpi	r24, 0x01	; 1
+ 408:	91 05       	cpc	r25, r1
+ 40a:	19 f4       	brne	.+6      	; 0x412 <main+0x22e>
+ 40c:	c6 01       	movw	r24, r12
+ 40e:	d7 de       	rcall	.-594    	; 0x1be <image>
+ 410:	10 c0       	rjmp	.+32     	; 0x432 <main+0x24e>
+			else if(menu == 2){image(menuLevel2);}
+ 412:	82 30       	cpi	r24, 0x02	; 2
+ 414:	91 05       	cpc	r25, r1
+ 416:	19 f4       	brne	.+6      	; 0x41e <main+0x23a>
+ 418:	c5 01       	movw	r24, r10
+ 41a:	d1 de       	rcall	.-606    	; 0x1be <image>
+ 41c:	0a c0       	rjmp	.+20     	; 0x432 <main+0x24e>
+			else if(menu == 3){image(menuLevel3);}
+ 41e:	83 30       	cpi	r24, 0x03	; 3
+ 420:	91 05       	cpc	r25, r1
+ 422:	19 f4       	brne	.+6      	; 0x42a <main+0x246>
+ 424:	c4 01       	movw	r24, r8
+ 426:	cb de       	rcall	.-618    	; 0x1be <image>
+ 428:	04 c0       	rjmp	.+8      	; 0x432 <main+0x24e>
+			else if(menu == 4){image(menuLevel4);}
+ 42a:	04 97       	sbiw	r24, 0x04	; 4
+ 42c:	11 f4       	brne	.+4      	; 0x432 <main+0x24e>
+ 42e:	c3 01       	movw	r24, r6
+ 430:	c6 de       	rcall	.-628    	; 0x1be <image>
+			update_display();
+ 432:	ac de       	rcall	.-680    	; 0x18c <update_display>
+			button7_down = 0;
+ 434:	10 92 a2 00 	sts	0x00A2, r1
+		}		
+		if(button1_down)
+ 438:	80 91 ad 00 	lds	r24, 0x00AD
+ 43c:	88 23       	and	r24, r24
+ 43e:	49 f1       	breq	.+82     	; 0x492 <__stack+0x33>
+		{
+			if(menu>1){
+ 440:	80 91 64 00 	lds	r24, 0x0064
+ 444:	90 91 65 00 	lds	r25, 0x0065
+ 448:	82 30       	cpi	r24, 0x02	; 2
+ 44a:	91 05       	cpc	r25, r1
+ 44c:	2c f0       	brlt	.+10     	; 0x458 <main+0x274>
+				menu = menu-1;
+ 44e:	01 97       	sbiw	r24, 0x01	; 1
+ 450:	90 93 65 00 	sts	0x0065, r25
+ 454:	80 93 64 00 	sts	0x0064, r24
+			}
+			if(menu==1){image(menuLevel1);}
+ 458:	80 91 64 00 	lds	r24, 0x0064
+ 45c:	90 91 65 00 	lds	r25, 0x0065
+ 460:	81 30       	cpi	r24, 0x01	; 1
+ 462:	91 05       	cpc	r25, r1
+ 464:	19 f4       	brne	.+6      	; 0x46c <__stack+0xd>
+ 466:	c6 01       	movw	r24, r12
+ 468:	aa de       	rcall	.-684    	; 0x1be <image>
+ 46a:	10 c0       	rjmp	.+32     	; 0x48c <__stack+0x2d>
+			else if(menu == 2){image(menuLevel2);}
+ 46c:	82 30       	cpi	r24, 0x02	; 2
+ 46e:	91 05       	cpc	r25, r1
+ 470:	19 f4       	brne	.+6      	; 0x478 <__stack+0x19>
+ 472:	c5 01       	movw	r24, r10
+ 474:	a4 de       	rcall	.-696    	; 0x1be <image>
+ 476:	0a c0       	rjmp	.+20     	; 0x48c <__stack+0x2d>
+			else if(menu == 3){image(menuLevel3);}
+ 478:	83 30       	cpi	r24, 0x03	; 3
+ 47a:	91 05       	cpc	r25, r1
+ 47c:	19 f4       	brne	.+6      	; 0x484 <__stack+0x25>
+ 47e:	c4 01       	movw	r24, r8
+ 480:	9e de       	rcall	.-708    	; 0x1be <image>
+ 482:	04 c0       	rjmp	.+8      	; 0x48c <__stack+0x2d>
+			else if(menu == 4){image(menuLevel4);}
+ 484:	04 97       	sbiw	r24, 0x04	; 4
+ 486:	11 f4       	brne	.+4      	; 0x48c <__stack+0x2d>
+ 488:	c3 01       	movw	r24, r6
+ 48a:	99 de       	rcall	.-718    	; 0x1be <image>
+			update_display();
+ 48c:	7f de       	rcall	.-770    	; 0x18c <update_display>
+			button1_down = 0;
+ 48e:	10 92 ad 00 	sts	0x00AD, r1
+		}
+		
+		if(button2_down)
+ 492:	80 91 a3 00 	lds	r24, 0x00A3
+ 496:	88 23       	and	r24, r24
+ 498:	49 f1       	breq	.+82     	; 0x4ec <__stack+0x8d>
+		{
+			if(menu<4){
+ 49a:	80 91 64 00 	lds	r24, 0x0064
+ 49e:	90 91 65 00 	lds	r25, 0x0065
+ 4a2:	84 30       	cpi	r24, 0x04	; 4
+ 4a4:	91 05       	cpc	r25, r1
+ 4a6:	2c f4       	brge	.+10     	; 0x4b2 <__stack+0x53>
+				menu = menu+1;
+ 4a8:	01 96       	adiw	r24, 0x01	; 1
+ 4aa:	90 93 65 00 	sts	0x0065, r25
+ 4ae:	80 93 64 00 	sts	0x0064, r24
+			}
+			if(menu==1){image(menuLevel1);}
+ 4b2:	80 91 64 00 	lds	r24, 0x0064
+ 4b6:	90 91 65 00 	lds	r25, 0x0065
+ 4ba:	81 30       	cpi	r24, 0x01	; 1
+ 4bc:	91 05       	cpc	r25, r1
+ 4be:	19 f4       	brne	.+6      	; 0x4c6 <__stack+0x67>
+ 4c0:	c6 01       	movw	r24, r12
+ 4c2:	7d de       	rcall	.-774    	; 0x1be <image>
+ 4c4:	10 c0       	rjmp	.+32     	; 0x4e6 <__stack+0x87>
+			else if(menu == 2){image(menuLevel2);}
+ 4c6:	82 30       	cpi	r24, 0x02	; 2
+ 4c8:	91 05       	cpc	r25, r1
+ 4ca:	19 f4       	brne	.+6      	; 0x4d2 <__stack+0x73>
+ 4cc:	c5 01       	movw	r24, r10
+ 4ce:	77 de       	rcall	.-786    	; 0x1be <image>
+ 4d0:	0a c0       	rjmp	.+20     	; 0x4e6 <__stack+0x87>
+			else if(menu == 3){image(menuLevel3);}
+ 4d2:	83 30       	cpi	r24, 0x03	; 3
+ 4d4:	91 05       	cpc	r25, r1
+ 4d6:	19 f4       	brne	.+6      	; 0x4de <__stack+0x7f>
+ 4d8:	c4 01       	movw	r24, r8
+ 4da:	71 de       	rcall	.-798    	; 0x1be <image>
+ 4dc:	04 c0       	rjmp	.+8      	; 0x4e6 <__stack+0x87>
+			else if(menu == 4){image(menuLevel4);}
+ 4de:	04 97       	sbiw	r24, 0x04	; 4
+ 4e0:	11 f4       	brne	.+4      	; 0x4e6 <__stack+0x87>
+ 4e2:	c3 01       	movw	r24, r6
+ 4e4:	6c de       	rcall	.-808    	; 0x1be <image>
+			update_display();
+ 4e6:	52 de       	rcall	.-860    	; 0x18c <update_display>
+			button2_down = 0;
+ 4e8:	10 92 a3 00 	sts	0x00A3, r1
+		}
+		
+		if(button0_down)
+ 4ec:	80 91 ae 00 	lds	r24, 0x00AE
+ 4f0:	88 23       	and	r24, r24
+ 4f2:	09 f4       	brne	.+2      	; 0x4f6 <__stack+0x97>
+ 4f4:	be ce       	rjmp	.-644    	; 0x272 <main+0x8e>
+		{
+			if(state==0){
+ 4f6:	80 91 8e 00 	lds	r24, 0x008E
+ 4fa:	90 91 8f 00 	lds	r25, 0x008F
+ 4fe:	00 97       	sbiw	r24, 0x00	; 0
+ 500:	39 f4       	brne	.+14     	; 0x510 <__stack+0xb1>
+				image(start);  // carga la imagen a visualizar
+ 502:	c2 01       	movw	r24, r4
+ 504:	5c de       	rcall	.-840    	; 0x1be <image>
+				state = 1;
+ 506:	10 93 8f 00 	sts	0x008F, r17
+ 50a:	00 93 8e 00 	sts	0x008E, r16
+ 50e:	08 c0       	rjmp	.+16     	; 0x520 <__stack+0xc1>
+			}
+			else if(state == 1){
+ 510:	01 97       	sbiw	r24, 0x01	; 1
+ 512:	31 f4       	brne	.+12     	; 0x520 <__stack+0xc1>
+				image(menuLevel1);
+ 514:	c6 01       	movw	r24, r12
+ 516:	53 de       	rcall	.-858    	; 0x1be <image>
+				state = 2;
+ 518:	30 92 8f 00 	sts	0x008F, r3
+ 51c:	20 92 8e 00 	sts	0x008E, r2
+			}
+			else if(state == 2){
+				//iniciar nivel seleccionado
+				//PAsar a estados de juego
+			}
+			update_display();
+ 520:	35 de       	rcall	.-918    	; 0x18c <update_display>
+			button0_down = 0;
+ 522:	10 92 ae 00 	sts	0x00AE, r1
+ 526:	a5 ce       	rjmp	.-694    	; 0x272 <main+0x8e>
+
+00000528 <_exit>:
+ 528:	f8 94       	cli
+
+0000052a <__stop_program>:
+ 52a:	ff cf       	rjmp	.-2      	; 0x52a <__stop_program>
