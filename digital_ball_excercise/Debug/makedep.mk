@@ -4,3 +4,9 @@
 
 main.c
 
+mpu6050.c
+
+mpu6050dmp6.c
+
+twimastertimeout.c
+

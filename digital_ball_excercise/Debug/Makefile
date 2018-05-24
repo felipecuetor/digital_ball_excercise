@@ -37,7 +37,10 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../main.c
+../main.c \
+../mpu6050.c \
+../mpu6050dmp6.c \
+../twimastertimeout.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,16 +50,28 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-main.o
+main.o \
+mpu6050.o \
+mpu6050dmp6.o \
+twimastertimeout.o
 
 OBJS_AS_ARGS +=  \
-main.o
+main.o \
+mpu6050.o \
+mpu6050dmp6.o \
+twimastertimeout.o
 
 C_DEPS +=  \
-main.d
+main.d \
+mpu6050.d \
+mpu6050dmp6.d \
+twimastertimeout.d
 
 C_DEPS_AS_ARGS +=  \
-main.d
+main.d \
+mpu6050.d \
+mpu6050dmp6.d \
+twimastertimeout.d
 
 OUTPUT_FILE_PATH +=digital_ball_excercise.elf
 
@@ -72,6 +87,12 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
+
+
 
 
 

@@ -8,6 +8,14 @@
 // --------------Configuración del microcontrolador ------------------------
 // llamado de librerias
 #include <avr/io.h>  // llama la libreria que contiene las palabras reservadas, para el control de puertos de entrada/salida
+#include <stdlib.h>
+#include <avr/interrupt.h>
+#include <avr/pgmspace.h>
+#include <util/delay.h>
+#include <math.h>  //include libm
+
+#include "mpu6050.h"
+
 #ifndef F_CPU
 /* prevent compiler error by supplying a default */
 /*# warning "F_CPU not defined for "*/
@@ -17,7 +25,7 @@
 
 //--------definición de los puertos I/O ------------------------------------
 
-#define INIT_PORT() DDRD |= (1<<PD3) | (1<<PD4) | (1<<PD5) | ~(1<<PD6) | ~(1<<PD7) | ~(1<<PD1) | ~(1<<PD2) | ~(1<<PD0) // los pines D3,D4 y D5 son salidas y los pines D6, D7, D1, D2 son entradas.
+#define INIT_PORT() DDRD |= (1<<PD3) | (1<<PD4) | (1<<PD5) | (0<<PD6) | (0<<PD7) | (0<<PD2) // los pines D3,D4 y D5 son salidas y los pines D6, D7, D1, D2 son entradas.
 	
 //--------definición de variables y constantes------------------------------
 #define CLK_HIGH()  PORTD |= _BV(PD5)  // Fija un 1 en la salida del pin D3
@@ -29,22 +37,20 @@
 
 #define BUTTON6_MASK (1<<PD6)
 #define BUTTON7_MASK (1<<PD7)
-#define BUTTON1_MASK (1<<PD1)
 #define BUTTON2_MASK (1<<PD2)
-#define BUTTON0_MASK (1<<PD0)
 #define BUTTON_PIN PIND
 
-volatile uint8_t button6_down;
-volatile uint8_t button7_down;
-volatile uint8_t button1_down;
-volatile uint8_t button2_down;
-volatile uint8_t button0_down;
+volatile uint8_t button6_down = 0b00000000;
+volatile uint8_t button7_down = 0b00000000;
+volatile uint8_t button2_down = 0b00000000;
 
 int x = 4;
 int y = 4;
+int time = 0;
 int menu = 1;
-int state = 0;
+int state = 1;
 uint8_t row;
+uint8_t rowTime;
 
 uint8_t now[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
 	0b00000000,
@@ -127,6 +133,7 @@ void update_now(int x, int y){
 	now[7] = empty;
 	
 	row = 0b10000000;
+	rowTime = 0b11111111;
 	if (x==1)
 	{
 		row = 0b10000000;
@@ -149,10 +156,36 @@ void update_now(int x, int y){
 	else if (x==7){
 		row = 0b00000010;
 	}
-	else if (x==8){
-		row = 0b00000001;
+	if(time>9000){
+		rowTime = 0b00000000;
 	}
+	else if(time>8000){
+		rowTime = 0b10000000;
+	}
+	else if(time>7000){
+		rowTime = 0b11000000;
+	}
+	else if(time>6000){
+		rowTime = 0b11100000;
+	}
+	else if(time>5000){
+		rowTime = 0b11110000;
+	}
+	else if(time>4000){
+		rowTime = 0b11111000;
+	}
+	else if(time>3000){
+		rowTime = 0b11111100;
+	}
+	else if(time>2000){
+		rowTime = 0b11111110;
+	}
+	else if(time>1000){
+		rowTime = 0b11111111;
+	}
+
 	now[y-1] = row;
+	now[7] = rowTime;
 }
 
 void spi_send(uint8_t data) // se especifica el tipo de variable que va a entrar a la funcion y como se llamara dentro de ella
@@ -243,7 +276,7 @@ static inline void debouncebtn6(void)
 	// Counter for number of equal states
 	static uint8_t count = 0;
 	// Keeps track of current (debounced) state
-	static uint8_t button_state = 0;
+	static uint8_t button_state = 1;
 	// Check if button is high or low for the moment
 	uint8_t current_state = (~BUTTON_PIN & BUTTON6_MASK) != 0;
 	if (current_state != button_state) {
@@ -269,7 +302,7 @@ static inline void debouncebtn7(void)
 	// Counter for number of equal states
 	static uint8_t count = 0;
 	// Keeps track of current (debounced) state
-	static uint8_t button_state = 0;
+	static uint8_t button_state = 1;
 	// Check if button is high or low for the moment
 	uint8_t current_state = (~BUTTON_PIN & BUTTON7_MASK) != 0;
 	if (current_state != button_state) {
@@ -290,38 +323,14 @@ static inline void debouncebtn7(void)
 	}
 }
 
-static inline void debouncebtn1(void)
-{
-	// Counter for number of equal states
-	static uint8_t count = 0;
-	// Keeps track of current (debounced) state
-	static uint8_t button_state = 0;
-	// Check if button is high or low for the moment
-	uint8_t current_state = (~BUTTON_PIN & BUTTON1_MASK) != 0;
-	if (current_state != button_state) {
-		// Button state is about to be changed, increase counter
-		count++;
-		if (count >= 100) {
-			// The button have not bounced for four checks, change state
-			button_state = current_state;
-			// If the button was pressed (not released), tell main so
-			if (current_state != 0) {
-				button1_down = 1;
-			}
-			count = 0;
-		}
-		} else {
-		// Reset counter
-		count = 0;
-	}
-}
+
 
 static inline void debouncebtn2(void)
 {
 	// Counter for number of equal states
 	static uint8_t count = 0;
 	// Keeps track of current (debounced) state
-	static uint8_t button_state = 0;
+	static uint8_t button_state = 1;
 	// Check if button is high or low for the moment
 	uint8_t current_state = (~BUTTON_PIN & BUTTON2_MASK) != 0;
 	if (current_state != button_state) {
@@ -342,47 +351,39 @@ static inline void debouncebtn2(void)
 	}
 }
 
-static inline void debouncebtn0(void)
-{
-	// Counter for number of equal states
-	static uint8_t count = 0;
-	// Keeps track of current (debounced) state
-	static uint8_t button_state = 0;
-	// Check if button is high or low for the moment
-	uint8_t current_state = (~BUTTON_PIN & BUTTON0_MASK) != 0;
-	if (current_state != button_state) {
-		// Button state is about to be changed, increase counter
-		count++;
-		if (count >= 100) {
-			// The button have not bounced for four checks, change state
-			button_state = current_state;
-			// If the button was pressed (not released), tell main so
-			if (current_state != 0) {
-				button0_down = 1;
-			}
-			count = 0;
-		}
-		} else {
-		// Reset counter
-		count = 0;
-	}
-}
 
 // ------------ Inicio del programa ----------------------------------------
 int main(void)
 {
+		DDRB = 0x01;
+		int16_t ax = 0;
+		int16_t ay = 0;
+		int16_t az = 0;
+		int16_t gx = 0;
+		int16_t gy = 0;
+		int16_t gz = 0;
+		double axg = 0;
+		double ayg = 0;
+		double azg = 0;
+		double gxds = 0;
+		double gyds = 0;
+		double gzds = 0;
+
+		//init interrupt
+		sei();
+		//init mpu6050
+		mpu6050_init();
+		_delay_ms(50);
 	
 	max7219_init(); // llamado de la funcion "max7219_init"
 	update_now(x,y);
-	image(menuLevel1);  // carga la imagen a visualizar
+	image(start);  // carga la imagen a visualizar
 	update_display();
 	while(1)  // loop infinito
 	{
 		debouncebtn6();
 		debouncebtn7();
-		debouncebtn1();
 		debouncebtn2();
-		debouncebtn0();
 		if(button6_down)
 		{
 			if(state==0){
@@ -394,8 +395,8 @@ int main(void)
 				state = 2;
 			}
 			else if(state == 2){
-				//iniciar nivel seleccionado
-				//PAsar a estados de juego
+				image(now);
+				state = 3;
 			}
 			update_display();
 			button6_down = 0;
@@ -403,58 +404,62 @@ int main(void)
 		
 		if(button7_down)
 		{
-			if(menu>1){
-				menu = menu-1;
+			if(state!=2){
+				image(start);
 			}
-			if(menu==1){image(menuLevel1);}
-			else if(menu == 2){image(menuLevel2);}
-			else if(menu == 3){image(menuLevel3);}
-			else if(menu == 4){image(menuLevel4);}
-			update_display();
-			button7_down = 0;
-		}		
-		if(button1_down)
-		{
-			if(menu>1){
-				menu = menu-1;
-			}
-			if(menu==1){image(menuLevel1);}
-			else if(menu == 2){image(menuLevel2);}
-			else if(menu == 3){image(menuLevel3);}
-			else if(menu == 4){image(menuLevel4);}
-			update_display();
-			button1_down = 0;
-		}
-		
-		if(button2_down)
-		{
-			if(menu<4){
+			else if(menu<4){
 				menu = menu+1;
 			}
-			if(menu==1){image(menuLevel1);}
-			else if(menu == 2){image(menuLevel2);}
-			else if(menu == 3){image(menuLevel3);}
-			else if(menu == 4){image(menuLevel4);}
+			else{
+				menu = 1;
+			}
+			if(state==1){
+			}
+			else if(menu==1){image(menuLevel1);}
+			else if(menu==2){image(menuLevel2);}
+			else if(menu==3){image(menuLevel3);}
+			else if(menu==4){image(menuLevel4);}
 			update_display();
-			button2_down = 0;
+			button7_down = 0;
 		}
 		
-		if(button0_down)
-		{
-			if(state==0){
-				image(start);  // carga la imagen a visualizar
-				state = 1;
+		
+		mpu6050_getRawData(&ax, &ay, &az, &gx, &gy, &gz);
+		mpu6050_getConvData(&axg, &ayg, &azg, &gxds, &gyds, &gzds);
+		if(state==3){
+			if(ayg<-0.3){
+				PORTB = 0b00000001;
+				if(y>1){
+					y=y-1;
+				}
 			}
-			else if(state == 1){
-				image(menuLevel1);
-				state = 2;
+			else if(ayg>0.3){
+				PORTB = 0b00000001;
+				if(y<7){
+					y=y+1;
+				}
 			}
-			else if(state == 2){
-				//iniciar nivel seleccionado
-				//PAsar a estados de juego
+			else if(axg<-0.3){
+				PORTB = 0b00000001;
+				if(x>1){
+					x=x-1;
+				}
 			}
+			else if(axg>0.3){
+				PORTB = 0b00000001;
+				if(x<8){
+					x=x+1;
+				}
+				
+			}
+			else{
+				PORTB = 0b00000000;
+			}
+			_delay_ms(250);
+			time = time + 250;
+			update_now(x,y);
+			image(now);
 			update_display();
-			button0_down = 0;
 		}
 	}
 }
