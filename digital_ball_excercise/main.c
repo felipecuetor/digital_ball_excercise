@@ -156,6 +156,10 @@ void update_now(int x, int y){
 	else if (x==7){
 		row = 0b00000010;
 	}
+	else if (x==8){
+		row = 0b00000001;
+	}
+	
 	if(time>9000){
 		rowTime = 0b00000000;
 	}
