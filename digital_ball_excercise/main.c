@@ -118,10 +118,38 @@ uint8_t menuLevel4[8] = {  // definicion de vector de 8 posiciones con variables
 	0b00000000
 };
 
-//--------definición funciones del sistema ---------------------------------
+uint8_t mazeLevel1[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000
+};
 
+uint8_t mazeLevel2[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
+	0b00000010,
+	0b00000010,
+	0b00000010,
+	0b00000000,
+	0b00000010,
+	0b00000010,
+	0b00000010,
+	0b00000000
+};
+
+//--------definición funciones del sistema ---------------------------------
 // ********** Funcion enviar por SPI ***************************************
-void update_now(int x, int y){
+int collision(int x, int y, uint8_t maze[], uint8_t pRow){ //1 si hay colision entre la bola y una pared del laberinto, 0 de lo contrario
+	uint8_t maze_row = maze[y-1];
+	uint8_t hasCollided = maze_row & pRow;
+	if(hasCollided){return 1;}
+	else{return 0;}	
+}
+
+void update_now(int x, int y, uint8_t maze[]){
 	uint8_t empty = 0b00000000;
 	now[0] = empty;
 	now[1] = empty;
@@ -187,8 +215,11 @@ void update_now(int x, int y){
 	else if(time>1000){
 		rowTime = 0b11111111;
 	}
-
-	now[y-1] = row;
+	
+	int collider = collision(x,y,maze,row);
+	if(collider == 0){
+		now[y-1] = row;	
+	}
 	now[7] = rowTime;
 }
 
@@ -380,7 +411,7 @@ int main(void)
 		_delay_ms(50);
 	
 	max7219_init(); // llamado de la funcion "max7219_init"
-	update_now(x,y);
+	update_now(x,y,mazeLevel1);
 	image(start);  // carga la imagen a visualizar
 	update_display();
 	while(1)  // loop infinito
@@ -461,7 +492,7 @@ int main(void)
 			}
 			_delay_ms(250);
 			time = time + 250;
-			update_now(x,y);
+			update_now(x,y,mazeLevel2);
 			image(now);
 			update_display();
 		}
