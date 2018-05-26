@@ -379,6 +379,10 @@ int main(void)
 		mpu6050_init();
 		_delay_ms(50);
 	
+	
+	int velocity_delay = 250;
+	int velocity_delay_x = 250;
+	int velocity_delay_y = 250;
 	max7219_init(); // llamado de la funcion "max7219_init"
 	update_now(x,y);
 	image(start);  // carga la imagen a visualizar
@@ -431,25 +435,63 @@ int main(void)
 		mpu6050_getRawData(&ax, &ay, &az, &gx, &gy, &gz);
 		mpu6050_getConvData(&axg, &ayg, &azg, &gxds, &gyds, &gzds);
 		if(state==3){
-			if(ayg<-0.3){
+			if(ayg<-0.1){
+				if(ayg<-0.5){
+					velocity_delay = 50;
+				}
+				else if(ayg<-0.3){
+					velocity_delay = 150;
+				}
+				else{
+					velocity_delay = 250;
+				}
+				
 				PORTB = 0b00000001;
 				if(y>1){
 					y=y-1;
 				}
 			}
-			else if(ayg>0.3){
+			else if(ayg>0.1){
+				if(ayg>0.5){
+					velocity_delay = 50;
+				}
+				else if(ayg>0.3){
+					velocity_delay = 150;
+				}
+				else{
+					velocity_delay = 250;
+				}
 				PORTB = 0b00000001;
 				if(y<7){
 					y=y+1;
 				}
 			}
-			else if(axg<-0.3){
+			if(axg<-0.1){
+				if(axg<-0.5){
+					velocity_delay = 50;
+				}
+				else if(axg<-0.3){
+					velocity_delay = 150;
+				}
+				else{
+					velocity_delay = 250;
+				}
+				
 				PORTB = 0b00000001;
 				if(x>1){
 					x=x-1;
 				}
 			}
-			else if(axg>0.3){
+			else if(axg>0.1){
+				if(axg>0.5){
+					velocity_delay = 50;
+				}
+				else if(axg>0.3){
+					velocity_delay = 150;
+				}
+				else{
+					velocity_delay = 250;
+				}
 				PORTB = 0b00000001;
 				if(x<8){
 					x=x+1;
@@ -459,8 +501,8 @@ int main(void)
 			else{
 				PORTB = 0b00000000;
 			}
-			_delay_ms(250);
-			time = time + 250;
+			_delay_ms(velocity_delay);
+			time = time + velocity_delay;
 			update_now(x,y);
 			image(now);
 			update_display();
