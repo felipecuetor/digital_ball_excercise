@@ -118,17 +118,6 @@ uint8_t menuLevel4[8] = {  // definicion de vector de 8 posiciones con variables
 	0b00000000
 };
 
-uint8_t mazeLevel1[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
-	0b00000000,
-	0b00000000,
-	0b00000000,
-	0b00000000,
-	0b00000000,
-	0b00000000,
-	0b00000000,
-	0b00000000
-};
-
 uint8_t mazeLevel2[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
 	0b00000010,
 	0b00000010,
@@ -141,15 +130,9 @@ uint8_t mazeLevel2[8] = {  // definicion de vector de 8 posiciones con variables
 };
 
 //--------definición funciones del sistema ---------------------------------
-// ********** Funcion enviar por SPI ***************************************
-int collision(int x, int y, uint8_t maze[], uint8_t pRow){ //1 si hay colision entre la bola y una pared del laberinto, 0 de lo contrario
-	uint8_t maze_row = maze[y-1];
-	uint8_t hasCollided = maze_row & pRow;
-	if(hasCollided){return 1;}
-	else{return 0;}	
-}
 
-void update_now(int x, int y, uint8_t maze[]){
+// ********** Funcion enviar por SPI ***************************************
+void update_now(int x, int y){
 	uint8_t empty = 0b00000000;
 	now[0] = empty;
 	now[1] = empty;
@@ -215,11 +198,8 @@ void update_now(int x, int y, uint8_t maze[]){
 	else if(time>1000){
 		rowTime = 0b11111111;
 	}
-	
-	int collider = collision(x,y,maze,row);
-	if(collider == 0){
-		now[y-1] = row;	
-	}
+
+	now[y-1] = row;
 	now[7] = rowTime;
 }
 
@@ -386,6 +366,12 @@ static inline void debouncebtn2(void)
 	}
 }
 
+int collision(int x, int y, uint8_t maze[]){ //1 si hay colision entre la bola y una pared del laberinto, 0 de lo contrario
+	uint8_t maze_row = maze[y-1];
+	uint8_t hasCollided = maze_row & (1 << (8-x));
+	if(hasCollided){return 1;}
+	else{return 0;}
+}
 
 // ------------ Inicio del programa ----------------------------------------
 int main(void)
@@ -411,7 +397,7 @@ int main(void)
 		_delay_ms(50);
 	
 	max7219_init(); // llamado de la funcion "max7219_init"
-	update_now(x,y,mazeLevel1);
+	update_now(x,y);
 	image(start);  // carga la imagen a visualizar
 	update_display();
 	while(1)  // loop infinito
@@ -462,37 +448,71 @@ int main(void)
 		mpu6050_getRawData(&ax, &ay, &az, &gx, &gy, &gz);
 		mpu6050_getConvData(&axg, &ayg, &azg, &gxds, &gyds, &gzds);
 		if(state==3){
-			if(ayg<-0.3){
-				PORTB = 0b00000001;
-				if(y>1){
-					y=y-1;
+			if(menu == 2){
+				image(mazeLevel2);
+				update_display();
+				if(ayg<-0.3){
+					PORTB = 0b00000001;
+					if(y>1 && collision(x,y-1,mazeLevel2)){
+						y=y-1;
+					}
 				}
-			}
-			else if(ayg>0.3){
-				PORTB = 0b00000001;
-				if(y<7){
-					y=y+1;
+				else if(ayg>0.3 && collision(x,y+1,mazeLevel2)){
+					PORTB = 0b00000001;
+					if(y<7){
+						y=y+1;
+					}
 				}
-			}
-			else if(axg<-0.3){
-				PORTB = 0b00000001;
-				if(x>1){
-					x=x-1;
+				else if(axg<-0.3 && collision(x-1,y,mazeLevel2)){
+					PORTB = 0b00000001;
+					if(x>1){
+						x=x-1;
+					}
 				}
-			}
-			else if(axg>0.3){
-				PORTB = 0b00000001;
-				if(x<8){
-					x=x+1;
+				else if(axg>0.3 && collision(x+1,y,mazeLevel2)){
+					PORTB = 0b00000001;
+					if(x<8){
+						x=x+1;
+					}
+					
 				}
-				
+				else{
+					PORTB = 0b00000000;
+				}
 			}
 			else{
-				PORTB = 0b00000000;
-			}
+				if(ayg<-0.3){
+					PORTB = 0b00000001;
+					if(y>1){
+						y=y-1;
+					}
+				}
+				else if(ayg>0.3){
+					PORTB = 0b00000001;
+					if(y<7){
+						y=y+1;
+					}
+				}
+				else if(axg<-0.3){
+					PORTB = 0b00000001;
+					if(x>1){
+						x=x-1;
+					}
+				}
+				else if(axg>0.3){
+					PORTB = 0b00000001;
+					if(x<8){
+						x=x+1;
+					}
+					
+				}
+				else{
+					PORTB = 0b00000000;
+				}
+			}			
 			_delay_ms(250);
 			time = time + 250;
-			update_now(x,y,mazeLevel2);
+			update_now(x,y);
 			image(now);
 			update_display();
 		}
