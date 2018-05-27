@@ -118,6 +118,16 @@ uint8_t menuLevel4[8] = {  // definicion de vector de 8 posiciones con variables
 	0b00000000
 };
 
+uint8_t mazeLevel1[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000
+};
 uint8_t mazeLevel2[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
 	0b00000010,
 	0b00000010,
@@ -132,7 +142,7 @@ uint8_t mazeLevel2[8] = {  // definicion de vector de 8 posiciones con variables
 //--------definición funciones del sistema ---------------------------------
 
 // ********** Funcion enviar por SPI ***************************************
-void update_now(int x, int y){
+void update_now(int x, int y, uint8_t maze[]){
 	uint8_t empty = 0b00000000;
 	now[0] = empty;
 	now[1] = empty;
@@ -199,7 +209,7 @@ void update_now(int x, int y){
 		rowTime = 0b11111111;
 	}
 
-	now[y-1] = row;
+	now[y-1] = row & maze[y-1];
 	now[7] = rowTime;
 }
 
@@ -397,7 +407,7 @@ int main(void)
 		_delay_ms(50);
 	
 	max7219_init(); // llamado de la funcion "max7219_init"
-	update_now(x,y);
+	update_now(x,y,mazeLevel1);
 	image(start);  // carga la imagen a visualizar
 	update_display();
 	while(1)  // loop infinito
@@ -449,8 +459,6 @@ int main(void)
 		mpu6050_getConvData(&axg, &ayg, &azg, &gxds, &gyds, &gzds);
 		if(state==3){
 			if(menu == 2){
-				image(mazeLevel2);
-				update_display();
 				if(ayg<-0.3){
 					PORTB = 0b00000001;
 					if(y>1 && collision(x,y-1,mazeLevel2)){
@@ -479,6 +487,11 @@ int main(void)
 				else{
 					PORTB = 0b00000000;
 				}
+				_delay_ms(250);
+				time = time + 250;
+				update_now(x,y,mazeLevel2);
+				image(now);
+				update_display();
 			}
 			else{
 				if(ayg<-0.3){
@@ -509,12 +522,12 @@ int main(void)
 				else{
 					PORTB = 0b00000000;
 				}
+				_delay_ms(250);
+				time = time + 250;
+				update_now(x,y,mazeLevel1);
+				image(now);
+				update_display();
 			}			
-			_delay_ms(250);
-			time = time + 250;
-			update_now(x,y);
-			image(now);
-			update_display();
 		}
 	}
 }
