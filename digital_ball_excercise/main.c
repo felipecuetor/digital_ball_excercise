@@ -460,23 +460,23 @@ int main(void)
 			if(menu == 2){
 				if(ayg<-0.3){
 					PORTB = 0b00000001;
-					if(y>1 && collision(x,y-1,mazeLevel2)){
+					if(y>1 && collision(x,y-1,mazeLevel2)==0){
 						y=y-1;
 					}
 				}
-				else if(ayg>0.3 && collision(x,y+1,mazeLevel2)){
+				else if(ayg>0.3 && collision(x,y+1,mazeLevel2)==0){
 					PORTB = 0b00000001;
 					if(y<7){
 						y=y+1;
 					}
 				}
-				else if(axg<-0.3 && collision(x-1,y,mazeLevel2)){
+				else if(axg<-0.3 && collision(x-1,y,mazeLevel2)==0){
 					PORTB = 0b00000001;
 					if(x>1){
 						x=x-1;
 					}
 				}
-				else if(axg>0.3 && collision(x+1,y,mazeLevel2)){
+				else if(axg>0.3 && collision(x+1,y,mazeLevel2)==0){
 					PORTB = 0b00000001;
 					if(x<8){
 						x=x+1;
