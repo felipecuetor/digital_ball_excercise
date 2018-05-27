@@ -142,16 +142,15 @@ uint8_t mazeLevel2[8] = {  // definicion de vector de 8 posiciones con variables
 //--------definición funciones del sistema ---------------------------------
 
 // ********** Funcion enviar por SPI ***************************************
-void update_now(int x, int y, uint8_t maze[]){
-	uint8_t empty = 0b00000000;
-	now[0] = empty;
-	now[1] = empty;
-	now[2] = empty;
-	now[3] = empty;
-	now[4] = empty;
-	now[5] = empty;
-	now[6] = empty;
-	now[7] = empty;
+void update_now(int x, int y, uint8_t maze[]){	
+	now[0] = maze[0];
+	now[1] = maze[1];
+	now[2] = maze[2];
+	now[3] = maze[3];
+	now[4] = maze[4];
+	now[5] = maze[5];
+	now[6] = maze[6];
+	now[7] = maze[7];
 	
 	row = 0b10000000;
 	rowTime = 0b11111111;
@@ -209,7 +208,7 @@ void update_now(int x, int y, uint8_t maze[]){
 		rowTime = 0b11111111;
 	}
 
-	now[y-1] = row & maze[y-1];
+	now[y-1] = row | maze[y-1];
 	now[7] = rowTime;
 }
 
