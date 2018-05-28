@@ -25,7 +25,8 @@
 
 //--------definición de los puertos I/O ------------------------------------
 
-#define INIT_PORT() DDRD |= (1<<PD3) | (1<<PD4) | (1<<PD5) | (0<<PD6) | (0<<PD7) | (0<<PD2) // los pines D3,D4 y D5 son salidas y los pines D6, D7, D1, D2 son entradas.
+#define INIT_PORT1() DDRD |= (1<<PD3) | (1<<PD4) | (1<<PD5) | (0<<PD6) | (0<<PD7) | (0<<PD2) // los pines D3,D4 y D5 son salidas y los pines D6, D7, D1, D2 son entradas.
+#define INIT_PORT2() DDRB |= (1<<PB0)| (1<<PB1)| (1<<PB2)| (1<<PB3)
 	
 //--------definición de variables y constantes------------------------------
 #define CLK_HIGH()  PORTD |= _BV(PD5)  // Fija un 1 en la salida del pin D3
@@ -34,6 +35,15 @@
 #define CS_LOW()    PORTD &= ~_BV(PD4)
 #define DATA_HIGH() PORTD |= _BV(PD3)
 #define DATA_LOW()  PORTD &= ~_BV(PD3)
+
+#define CONT_HIGH_1() PORTB |= _BV(PB1)
+#define CONT_LOW_1()  PORTB &= ~_BV(PB1)
+#define CONT_HIGH_2() PORTB |= _BV(PB2)
+#define CONT_LOW_2()  PORTB &= ~_BV(PB2)
+#define CONT_HIGH_6() PORTB |= _BV(PB3)
+#define CONT_LOW_6()  PORTB &= ~_BV(PB3)
+#define CONT_HIGH_0() PORTB |= _BV(PB0)
+#define CONT_LOW_0()  PORTB &= ~_BV(PB0)
 
 #define BUTTON6_MASK (1<<PD6)
 #define BUTTON7_MASK (1<<PD7)
@@ -44,13 +54,12 @@ volatile uint8_t button6_down = 0b00000000;
 volatile uint8_t button7_down = 0b00000000;
 volatile uint8_t button2_down = 0b00000000;
 
-int x = 4;
-int y = 4;
+int x = 8;
+int y = 1;
 int time = 0;
 int menu = 1;
 int state = 1;
 uint8_t row;
-uint8_t rowTime;
 
 uint8_t now[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
 	0b00000000,
@@ -63,15 +72,15 @@ uint8_t now[8] = {  // definicion de vector de 8 posiciones con variables intern
 	0b00000000
 };
 
-uint8_t start[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
-	0b00000000,
-	0b11111111,
-	0b10001001,
-	0b10001001,
-	0b10001001,
-	0b11001001,
-	0b01110110,
-	0b00000000
+uint8_t win[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
+	0b00000011,
+	0b00001100,
+	0b00110000,
+	0b11000000,
+	0b11000000,
+	0b00110000,
+	0b00001100,
+	0b00000011
 };
 
 uint8_t menuLevel1[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
@@ -118,6 +127,17 @@ uint8_t menuLevel4[8] = {  // definicion de vector de 8 posiciones con variables
 	0b00000000
 };
 
+uint8_t current_level[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000,
+	0b00000000
+};
+
 uint8_t mazeLevel1[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
 	0b00000000,
 	0b00000000,
@@ -129,31 +149,44 @@ uint8_t mazeLevel1[8] = {  // definicion de vector de 8 posiciones con variables
 	0b00000000
 };
 uint8_t mazeLevel2[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
-	0b00000010,
-	0b00000010,
-	0b00000010,
-	0b00000000,
-	0b00000010,
-	0b00000010,
-	0b00000010,
+	0b00010000,
+	0b00010000,
+	0b00010000,
+	0b00010000,
+	0b00010000,
+	0b00010000,
+	0b00010000,
 	0b00000000
+};
+uint8_t mazeLevel3[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
+	0b01100010,
+	0b00001010,
+	0b10111010,
+	0b10100010,
+	0b10101110,
+	0b10101010,
+	0b10101010,
+	0b00100000
+};
+
+uint8_t mazeLevel4[8] = {  // definicion de vector de 8 posiciones con variables internas de 8bits
+	0b00000010,
+	0b11011100,
+	0b00000101,
+	0b11010100,
+	0b11010010,
+	0b10001010,
+	0b00111010,
+	0b01000000
 };
 
 //--------definición funciones del sistema ---------------------------------
 
 // ********** Funcion enviar por SPI ***************************************
-void update_now(int x, int y, uint8_t maze[]){	
-	now[0] = maze[0];
-	now[1] = maze[1];
-	now[2] = maze[2];
-	now[3] = maze[3];
-	now[4] = maze[4];
-	now[5] = maze[5];
-	now[6] = maze[6];
-	now[7] = maze[7];
+void update_now(int x, int y){
+	strncpy(now, current_level, 8);
 	
 	row = 0b10000000;
-	rowTime = 0b11111111;
 	if (x==1)
 	{
 		row = 0b10000000;
@@ -179,37 +212,46 @@ void update_now(int x, int y, uint8_t maze[]){
 	else if (x==8){
 		row = 0b00000001;
 	}
-	
-	if(time>9000){
-		rowTime = 0b00000000;
-	}
-	else if(time>8000){
-		rowTime = 0b10000000;
-	}
-	else if(time>7000){
-		rowTime = 0b11000000;
-	}
-	else if(time>6000){
-		rowTime = 0b11100000;
-	}
-	else if(time>5000){
-		rowTime = 0b11110000;
-	}
-	else if(time>4000){
-		rowTime = 0b11111000;
-	}
-	else if(time>3000){
-		rowTime = 0b11111100;
-	}
-	else if(time>2000){
-		rowTime = 0b11111110;
-	}
-	else if(time>1000){
-		rowTime = 0b11111111;
-	}
 
-	now[y-1] = row | maze[y-1];
-	now[7] = rowTime;
+	now[y-1] = row | current_level[y-1];
+}
+
+void check_time(){
+		if(time>18000){
+			CONT_HIGH_0();
+		}
+		else if(time>16000){
+			CONT_LOW_0();
+			CONT_LOW_1();
+			CONT_LOW_2();
+			CONT_HIGH_6();
+		}
+		else if(time>14000){
+			CONT_HIGH_0();
+		}
+		else if(time>12000){
+			CONT_LOW_0();
+			CONT_HIGH_1();
+		}
+		else if(time>10000){
+			CONT_HIGH_0();
+		}
+		else if(time>8000){
+			CONT_LOW_0();
+			CONT_LOW_1();
+			CONT_HIGH_2();
+		}
+		else if(time>6000){
+			CONT_HIGH_0();
+		}
+		else if(time>4000){
+			CONT_LOW_0();
+			CONT_HIGH_1();
+		}
+		else if(time>2000){
+			CONT_HIGH_0();
+			
+		}
 }
 
 void spi_send(uint8_t data) // se especifica el tipo de variable que va a entrar a la funcion y como se llamara dentro de ella
@@ -247,7 +289,12 @@ void max7219_clear(void)
 // ********** Inicializar la matriz ***************************************
 void max7219_init(void)
 {
-	INIT_PORT();
+	INIT_PORT1();
+	INIT_PORT2();
+	CONT_LOW_0();
+	CONT_LOW_1();
+	CONT_LOW_2();
+	CONT_LOW_6();
 	// Decode mode: none
 	max7219_writec(0x04, 0);
 	// Intensity: 3 (0-15)
@@ -349,31 +396,6 @@ static inline void debouncebtn7(void)
 
 
 
-static inline void debouncebtn2(void)
-{
-	// Counter for number of equal states
-	static uint8_t count = 0;
-	// Keeps track of current (debounced) state
-	static uint8_t button_state = 1;
-	// Check if button is high or low for the moment
-	uint8_t current_state = (~BUTTON_PIN & BUTTON2_MASK) != 0;
-	if (current_state != button_state) {
-		// Button state is about to be changed, increase counter
-		count++;
-		if (count >= 100) {
-			// The button have not bounced for four checks, change state
-			button_state = current_state;
-			// If the button was pressed (not released), tell main so
-			if (current_state != 0) {
-				button2_down = 1;
-			}
-			count = 0;
-		}
-		} else {
-		// Reset counter
-		count = 0;
-	}
-}
 
 int collision(int x, int y, uint8_t maze[]){ //1 si hay colision entre la bola y una pared del laberinto, 0 de lo contrario
 	uint8_t maze_row = maze[y-1];
@@ -385,39 +407,41 @@ int collision(int x, int y, uint8_t maze[]){ //1 si hay colision entre la bola y
 // ------------ Inicio del programa ----------------------------------------
 int main(void)
 {
-		DDRB = 0x01;
-		int16_t ax = 0;
-		int16_t ay = 0;
-		int16_t az = 0;
-		int16_t gx = 0;
-		int16_t gy = 0;
-		int16_t gz = 0;
-		double axg = 0;
-		double ayg = 0;
-		double azg = 0;
-		double gxds = 0;
-		double gyds = 0;
-		double gzds = 0;
+	DDRB = 0x01;
+	int16_t ax = 0;
+	int16_t ay = 0;
+	int16_t az = 0;
+	int16_t gx = 0;
+	int16_t gy = 0;
+	int16_t gz = 0;
+	double axg = 0;
+	double ayg = 0;
+	double azg = 0;
+	double gxds = 0;
+	double gyds = 0;
+	double gzds = 0;
+	CONT_HIGH_1();
+	CONT_HIGH_2();
+	CONT_HIGH_6();
+	CONT_HIGH_0();
 
-		//init interrupt
-		sei();
-		//init mpu6050
-		mpu6050_init();
-		_delay_ms(50);
-	
+	//init interrupt
+	sei();
+	//init mpu6050
+	mpu6050_init();
+	_delay_ms(50);
+	int velocity_delay = 250;
 	max7219_init(); // llamado de la funcion "max7219_init"
-	update_now(x,y,mazeLevel1);
-	image(start);  // carga la imagen a visualizar
+	image(win);  // carga la imagen a visualizar
 	update_display();
 	while(1)  // loop infinito
 	{
 		debouncebtn6();
 		debouncebtn7();
-		debouncebtn2();
 		if(button6_down)
 		{
 			if(state==0){
-				image(start);  // carga la imagen a visualizar
+				image(win);  // carga la imagen a visualizar
 				state = 1;
 			}
 			else if(state == 1){
@@ -428,6 +452,11 @@ int main(void)
 				image(now);
 				state = 3;
 			}
+			else if(state == 4){
+				image(menuLevel1);
+				state = 2;
+
+			}
 			update_display();
 			button6_down = 0;
 		}
@@ -435,7 +464,7 @@ int main(void)
 		if(button7_down)
 		{
 			if(state!=2){
-				image(start);
+				image(win);
 			}
 			else if(menu<4){
 				menu = menu+1;
@@ -457,76 +486,87 @@ int main(void)
 		mpu6050_getRawData(&ax, &ay, &az, &gx, &gy, &gz);
 		mpu6050_getConvData(&axg, &ayg, &azg, &gxds, &gyds, &gzds);
 		if(state==3){
-			if(menu == 2){
-				if(ayg<-0.3){
-					PORTB = 0b00000001;
-					if(y>1 && collision(x,y-1,mazeLevel2)==0){
-						y=y-1;
-					}
-				}
-				else if(ayg>0.3 && collision(x,y+1,mazeLevel2)==0){
-					PORTB = 0b00000001;
-					if(y<7){
-						y=y+1;
-					}
-				}
-				else if(axg<-0.3 && collision(x-1,y,mazeLevel2)==0){
-					PORTB = 0b00000001;
-					if(x>1){
-						x=x-1;
-					}
-				}
-				else if(axg>0.3 && collision(x+1,y,mazeLevel2)==0){
-					PORTB = 0b00000001;
-					if(x<8){
-						x=x+1;
-					}
-					
-				}
-				else{
-					PORTB = 0b00000000;
-				}
-				_delay_ms(250);
-				time = time + 250;
-				update_now(x,y,mazeLevel2);
-				image(now);
-				update_display();
+			if(menu == 1)
+			{
+				strncpy(current_level, mazeLevel1, 8);
 			}
-			else{
+			if(menu == 2)
+			{
+				strncpy(current_level, mazeLevel2, 8);
+			}
+			if(menu == 3)
+			{
+				strncpy(current_level, mazeLevel3, 8);
+			}
+			if(menu == 4)
+			{
+				strncpy(current_level, mazeLevel4, 8);
+			}
+			if(ayg<-0.1 && collision(x,y-1,current_level)==0){
 				if(ayg<-0.3){
-					PORTB = 0b00000001;
-					if(y>1){
-						y=y-1;
-					}
-				}
-				else if(ayg>0.3){
-					PORTB = 0b00000001;
-					if(y<7){
-						y=y+1;
-					}
-				}
-				else if(axg<-0.3){
-					PORTB = 0b00000001;
-					if(x>1){
-						x=x-1;
-					}
-				}
-				else if(axg>0.3){
-					PORTB = 0b00000001;
-					if(x<8){
-						x=x+1;
-					}
-					
+					velocity_delay = 150;
 				}
 				else{
-					PORTB = 0b00000000;
+					velocity_delay = 250;
 				}
-				_delay_ms(250);
-				time = time + 250;
-				update_now(x,y,mazeLevel1);
-				image(now);
+				if(y>1){
+					y=y-1;
+				}
+			}
+			else if(ayg>0.1 && collision(x,y+1,current_level)==0){
+				if(ayg>0.3){
+					velocity_delay = 100;
+				}
+				else{
+					velocity_delay = 250;
+				}
+				if(y<8){
+					y=y+1;
+				}
+			}
+			if(axg<-0.1 && collision(x-1,y,current_level)==0){
+				if(axg<-0.3){
+					velocity_delay = 100;
+				}
+				else{
+					velocity_delay = 250;
+				}
+				if(x>1){
+					x=x-1;
+				}
+			}
+			else if(axg>0.1 && collision(x+1,y,current_level)==0){
+				if(axg>0.3){
+					velocity_delay = 100;
+				}
+				else{
+					velocity_delay = 250;
+				}
+				if(x<8){
+					x=x+1;
+				}
+				
+			}
+			_delay_ms(velocity_delay);
+			time = time + velocity_delay;
+			update_now(x,y);
+			image(now);
+			update_display();
+			check_time();
+			
+			if(x==1 && y==8 ){
+				state=4;
+				image(win);
 				update_display();
-			}			
+				x=8;
+				y=1;
+				time = 0;
+				menu = 1;
+				CONT_LOW_0();
+				CONT_LOW_1();
+				CONT_LOW_2();
+				CONT_LOW_6();
+			}
 		}
 	}
 }
